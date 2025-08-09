@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>攤食什</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      background: #fff8dc;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: #d2691e;
+      margin-top: 20px;
+    }
+
+    #game {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 30px auto;
+      height: 400px;
+      background-color: #f5deb3;
+      border: 3px solid #8b4513;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .food {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background-color: #ffcc00;
+      border-radius: 50%;
+      cursor: pointer;
+      line-height: 60px;
+      text-align: center;
+      font-weight: bold;
+      color: #8b0000;
+      box-shadow: 0 0 5px #555;
+    }
+
+    #score {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+
+    #startBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff7f50;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #startBtn:hover {
+      background-color: #ff6347;
+    }
+
+    #timer {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍢 攤食什！🍡</h1>
+  <div id="score">分數：0</div>
+  <div id="timer">時間：30 秒</div>
+  <button id="startBtn">開始遊戲</button>
+  <div id="game"></div>
+
+  <script>
+    const gameArea = document.getElementById("game");
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("timer");
+    const startBtn = document.getElementById("startBtn");
+
+    let score = 0;
+    let timeLeft = 30;
+    let gameInterval;
+    let timer;
+
+    const foodList = ["🍡", "🍢", "🍥", "🍘", "🥟", "🥠", "🧋"];
+
+    function spawnFood() {
+      const food = document.createElement("div");
+      food.classList.add("food");
+      food.textContent = foodList[Math.floor(Math.random() * foodList.length)];
+      food.style.top = Math.random() * 340 + "px";
+      food.style.left = Math.random() * 540 + "px";
+
+      food.onclick = function () {
+        score += 1;
+        scoreDisplay.textContent = "分數：" + score;
+        gameArea.removeChild(food);
+      };
+
+      gameArea.appendChild(food);
+
+      setTimeout(() => {
+        if (gameArea.contains(food)) {
+          gameArea.removeChild(food);
+        }
+      }, 1500);
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = "分數：" + score;
+      timerDisplay.textContent = "時間：" + timeLeft + " 秒";
+      gameArea.innerHTML = "";
+
+      gameInterval = setInterval(spawnFood, 600);
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = "時間：" + timeLeft + " 秒";
+        if (timeLeft <= 0) {
+          clearInterval(gameInterval);
+          clearInterval(timer);
+          alert("時間到！你的分數是：" + score);
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener("click", startGame);
+  </script>
+</body>
+</html>
